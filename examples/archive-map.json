@@ -1,0 +1,11 @@
+{
+  "object_id": "objectID",
+  "name": "name",
+  "description": "description",
+  "category": "category",
+  "available": "available",
+  "status": "status",
+  "boost": "boost",
+  "reviewed_on": "reviewed_on",
+  "expires_on": "expires_on"
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "objectID": "EX-101",
+    "name": "Canvas daypack",
+    "description": "Everyday canvas backpack",
+    "category": "Packs",
+    "available": true,
+    "supplier": {
+      "code": "LOCAL"
+    }
+  }
+]

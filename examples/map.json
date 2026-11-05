@@ -1,0 +1,7 @@
+{
+  "object_id": "objectID",
+  "name": "title",
+  "description": "description",
+  "category": "department",
+  "available": "in_stock"
+}

@@ -1,115 +1,92 @@
-<h1 align="center">Catalogue Search for Claude Code</h1>
+# Catalogue Search for Claude Code
 
-<p align="center">
-  <strong>The open-source catalogue search system that is just a database and Claude Code.</strong>
-</p>
+Search your catalogue, check what people cannot find, and keep the corrections with the person who owns them. An open-source database and CLI for the catalogue search work you use Algolia for.
 
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+## Three ways to own it
 
-<!-- three-doors -->
-<table align="center">
-  <tr>
-    <td align="center"><strong>Do it yourself</strong><br/>Clone it, run it, own it. Free, MIT.<br/><a href="#quick-start">Quick start</a></td>
-    <td align="center"><strong>We customise it</strong><br/>Your fields, your rules, your Algolia data brought across.<br/><a href="https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=algolia">Book a call</a></td>
-    <td align="center"><strong>We run it for you</strong><br/>Installed, connected and operated inside Omni. Setup fee, then a retainer.<br/><a href="https://enterprisedna.co/omni/instead-of/algolia?utm_source=github&utm_medium=readme&utm_campaign=algolia">How it works</a></td>
-  </tr>
-</table>
+- **Do it yourself.** Free under the MIT licence. Run the database and commands with Claude Code, Codex, OpenCode or Cursor. Hosting and agent subscriptions are separate.
+- **We customise it.** Enterprise DNA maps your records, fields, search rules and existing website connection. One setup fee, then a retainer for ongoing work.
+- **We run it for you.** Omni by Enterprise DNA installs, connects and operates your version. One setup fee, then a monthly retainer. [Book a 30-minute call](https://enterprisedna.co/omni/book?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=algolia).
 
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-algolia">Instead of Algolia</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
+## Try the fictional catalogue
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
-
----
-
-## What is this
-
-Catalogue Search for Claude Code does the job you pay Algolia for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the Algolia dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays Algolia per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=algolia).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
-
-## Quick start
-
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
+Node 20 or later. No database account or vendor credentials needed.
 
 ```bash
-git clone https://github.com/Enterprise-DNA-OS/catalogue-search-for-claude-code.git
-cd catalogue-search-for-claude-code
 npm install
 npm run demo
+npm run search -- catalogues
+npm run search -- search "waterproof jacket" --catalogue=harbour-outdoors
+npm run search -- relevance-check --catalogue=harbour-outdoors
+npm run search -- weekly-review --catalogue=harbour-outdoors
+npm run view
+npm run docs
+npm test
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+The demo is fictional Harbour Outdoors: two rain jackets, a rucksack, unavailable boots, an expired tent offer and trekking poles with no source review. A second guide catalogue proves search isolation. Seed is repeatable and does not overwrite changed demo records. Never seed your production database.
 
-### Use it with your own Postgres or Supabase
+The base provides English keyword search, category filtering, whole-query one-way synonyms, bounded boosts and expected-result checks. Archived, unavailable and expired records do not appear in search. It does not claim Algolia API compatibility, automatic typo correction, personalisation, a hosted search service or production load capacity. Website integration is a separate implementation and test job. Read [why there is no front end](docs/why-no-front-end.md).
 
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
+## Bring your Algolia records
 
-## The commands
+[The switching guide](docs/replace-algolia.md) explains the vendor’s browse export, cursor completeness, mapping and reconciliation. Import a complete record array in one command after creating your catalogue:
 
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
-
-| Command | What it does |
-|---|---|
-| `/...` | ... |
-
-## Instead of Algolia
-
-<!-- TODO(author): how to bring data across from Algolia; link docs/replace-algolia.md -->
-
-## Architecture
-
-```
-catalogue-search-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
+```bash
+npm run search -- add-catalogue --code=my-products --name="My products" --owner="Catalogue manager" --purpose="Public product discovery" --by="Operator"
+npm run search -- import algolia imports/products.json --catalogue=my-products --expected-count=250 --dry-run --by="Operator"
 ```
 
-## Built for coding agents
+Remove `--dry-run` once the record count and mapped fields agree with the source. The example count is illustrative; use your real count. Unknown attributes stay intact in the raw source record. Custom field names use `--map=imports/map.json`. A single bad record rolls back the whole import. Repeating an object ID updates that record within its catalogue. Imports replace mapped fields, so review the mapping before using an export to update locally edited records.
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+## The weekly rituals
 
-## Contributing
+Start with `/gaps`, `/relevance-check`, `/attention`, `/synonyms` and `/tasks`. `/weekly-review` combines the first three into a private draft. `/draft-search-fix` prepares the correction brief. `/compliance` flags purpose, retention and source-review gaps with sources and limits. Nothing sends or deploys.
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+The full routing table is in [CLAUDE.md](CLAUDE.md). `npm run search -- help` lists the CLI and accepted flags. `--json` produces structured results. Failed expectations are returned as FAIL rows with exit 0 so a review can contain both passes and failures; invalid commands or ambiguous references exit 1.
 
-## Want it installed and run for you?
+## Ten questions across your records
 
-Enterprise DNA installs Catalogue Search for Claude Code for your business, migrates your Algolia data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+These are implemented queries, not unsupported claims about another vendor’s dashboards. Run `npm run search -- insights <key> --catalogue=harbour-outdoors`.
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=algolia)
-- Read more: [enterprisedna.co/omni/instead-of/algolia](https://enterprisedna.co/omni/instead-of/algolia?utm_source=github&utm_medium=readme&utm_campaign=algolia)
+1. Which categories contain the most overdue source reviews? `stale-categories`
+2. Which products have no searchable description? `missing-descriptions`
+3. Which unavailable products are still expected by our search tests? `stock-gaps`
+4. Which expired offers are excluded from results? `expired-offers`
+5. Which categories have the most products without an expected search? `untested-categories`
+6. Which vocabulary changes are past their review date? `synonym-debt`
+7. Who owns the most overdue search corrections? `owner-backlog`
+8. Which days of query history are past our retention policy? `retention-review`
+9. Which recorded searches repeatedly found nothing? `zero-demand`
+10. Which expected results fail after the latest catalogue change? `failed-expectations`
 
-## License
+## Your first hour: ten things to ask for
 
-MIT. Copyright (c) 2026 Enterprise DNA.
+1. Show what needs attention this week.
+2. Find a waterproof jacket and explain the ranking.
+3. Show the recorded searches that found nothing.
+4. Tell me why boots fail the expected search.
+5. Show the owner of the overdue jacket review.
+6. Add a search case for the product customers ask for.
+7. Draft the search correction brief.
+8. Prepare the Monday search review.
+9. Add a supplier field through /customise.
+10. Add a report of overdue reviews grouped by category through /new-view.
+
+## Reports and paperwork
+
+Set business name, logo and colours in `brand.json`. `npm run view` produces three read-only HTML reports: catalogue health, attention and zero results. `npm run docs` produces a catalogue review worksheet, synonym review worksheet and retention review for each catalogue. Files remain local and are printable. These are operational working papers, not statutory certificates. The renderer escapes record text and uses private file permissions where the operating system supports them.
+
+## Data, access and backups
+
+`supabase/migrations/` contains portable Postgres SQL. The adapter selects operator-managed Postgres through DATABASE_URL or embedded PGlite under `.data/db`. Both use the same queries. All eight domain tables have UUIDs, timestamps and update triggers. Public database privileges are revoked; no anonymous database access is granted. This is a trusted-operator tool, not a multi-tenant access service.
+
+`export exports/<new-directory>` writes all eight record types to snapshot.json and one importable JSON file per catalogue. Existing output directories are refused. Keep these files private. The default reimport maps catalogue content only; use the explicit archive map in the switching guide for status and review fields. The snapshot is an audit-readable export, not a full database restore tool. Test recovery from a stopped PGlite directory copy or Postgres backup before cutover. Do not commit imports, exports or generated documents.
+
+## Validation
+
+`npm test` uses a temporary data directory and checks the search engine, catalogue isolation, ranking expectations, source expiry, audit writes, import idempotency, dry run, rollback, mappings, export reimport, drafts, HTML escaping and actual CLI exit codes. GitHub Actions runs on Linux and Windows and also against disposable Postgres. Local runs do not prove hosted CI passed; check the workflow result after pushing.
+
+## Licence and independence
+
+MIT. Copyright 2026 Enterprise DNA. This is an independent project, not affiliated with Algolia. Your database is the product; the coding agent is the door. [Read the comparison](https://enterprisedna.co/omni/instead-of/algolia?utm_source=github&utm_medium=readme&utm_campaign=algolia).

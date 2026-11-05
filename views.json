@@ -1,13 +1,33 @@
 [
   {
-    "name": "week",
-    "title": "This week",
-    "subtitle": "Catalogue Search for Claude Code: what needs attention, rendered by npm run view",
+    "name": "catalogue-health",
+    "title": "Catalogue search health",
+    "subtitle": "Fictional demo until you replace the records",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Owners and coverage",
+        "sql": "select code,name,owner,records,searchable,review_due,test_cases,open_tasks from catalogue_health order by code"
+      }
+    ]
+  },
+  {
+    "name": "attention",
+    "title": "Search work to review",
+    "sections": [
+      {
+        "title": "Stale sources and overdue work",
+        "sql": "select * from attention order by due_on nulls first,code,reference"
+      }
+    ]
+  },
+  {
+    "name": "zero-results",
+    "title": "Searches without results",
+    "sections": [
+      {
+        "title": "Recorded search gaps",
+        "sql": "select * from zero_results order by attempts desc,code,query",
+        "note": "Only recorded queries are included. Searches are not logged automatically."
       }
     ]
   }

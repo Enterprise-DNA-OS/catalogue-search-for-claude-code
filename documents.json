@@ -1,11 +1,57 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "catalogue-review",
+    "title": "Catalogue review worksheet",
+    "for_each": "select id,code from catalogues order by code",
+    "file": "code",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Owner and purpose",
+        "sql": "select name,owner,purpose,review_days,retention_days from catalogues where id=$1",
+        "layout": "record"
+      },
+      {
+        "title": "Source records",
+        "sql": "select object_id,name,category,available,status,reviewed_on,expires_on from records where catalogue_id=$1 order by object_id"
+      },
+      {
+        "title": "Expected search results",
+        "sql": "select query,expected_object_id,max_rank,rationale from relevance_cases where catalogue_id=$1 order by query"
+      }
+    ]
+  },
+  {
+    "name": "synonym-review",
+    "title": "Synonym review worksheet",
+    "for_each": "select id,code from catalogues order by code",
+    "file": "code",
+    "sections": [
+      {
+        "title": "Vocabulary to check",
+        "sql": "select term,expansion,owner,review_on from synonyms where catalogue_id=$1 order by term"
+      },
+      {
+        "title": "Open work",
+        "sql": "select title,owner,due_on from tasks where catalogue_id=$1 and status='open' order by due_on"
+      }
+    ]
+  },
+  {
+    "name": "retention-review",
+    "title": "Search history retention review",
+    "for_each": "select id,code from catalogues order by code",
+    "file": "code",
+    "sections": [
+      {
+        "title": "Local retention policy",
+        "sql": "select name,owner,purpose,retention_days from catalogues where id=$1",
+        "layout": "record"
+      },
+      {
+        "title": "Events past the chosen period",
+        "sql": "select occurred_on,count(*)::int as event_count from query_events where catalogue_id=$1 and occurred_on<current_date-(select retention_days from catalogues where id=$1) group by occurred_on order by occurred_on",
+        "note": "The operator reviews retention and arranges approved removal. This report is not a legal certification."
+      }
     ]
   }
 ]
